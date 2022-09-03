@@ -1,0 +1,137 @@
+@layout('layout/app.edge')
+
+@set('title','welcome')
+
+
+@section('body')
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true"
+      aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+        preserveAspectRatio="xMidYMid slice" focusable="false">
+        <rect width="100%" height="100%" fill="#777" />
+      </svg>
+
+      <div class="container">
+        <div class="carousel-caption text-start">
+          <h1>Example headline.</h1>
+          <p>Some representative placeholder content for the first slide of the carousel.</p>
+          <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+        preserveAspectRatio="xMidYMid slice" focusable="false">
+        <rect width="100%" height="100%" fill="#777" />
+      </svg>
+
+      <div class="container">
+        <div class="carousel-caption">
+          <h1>Another example headline.</h1>
+          <p>Some representative placeholder content for the second slide of the carousel.</p>
+          <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+        preserveAspectRatio="xMidYMid slice" focusable="false">
+        <rect width="100%" height="100%" fill="#777" />
+      </svg>
+
+      <div class="container">
+        <div class="carousel-caption text-end">
+          <h1>One more for good measure.</h1>
+          <p>Some representative placeholder content for the third slide of this carousel.</p>
+          <p><a class="btn btn-lg btn-primary" href="#">Browse gallery</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+
+<section>
+  <div class="container">
+    {{-- notification --}}
+    @if(flashMessages.has('notification'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Message</strong> {{ flashMessages.get('notification')}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <div class="container my-3 d-flex justify-content-between">
+      <div class="d-flex flex-column ">
+        <h4>Browse podcast</h4>
+      </div>
+      <div class="d-flex flex-column ">
+        <a href="{{route('categories.show', {slug:'development_category'})}}">
+          <span class="icon-text me-4 has-text-info">
+            <span class="icon">
+              <ion-icon name="list-outline"></ion-icon>
+            </span>
+            <span><Strong class="has-text-info">Browse categories</Strong></span>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      @each(podcast in podcasts)
+      <div class="col-lg-3 col-md-6 col-sm-12">
+        <a href="{{route('podcast.show', {slug: podcast.slug})}}">
+          <div class="profile-card-2">
+            <img src="{{appUrl}}/{{podcast.logo}}" class="img img-responsive">
+            <div class="profile-name">{{ truncate(podcast.title, 50) }}</div>
+            <div class="profile-username fs-1 mt-3">
+              <ion-icon name="radio-outline"></ion-icon>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      @else
+      <p class="p-3 rounded bg-light text-muted text-centered">
+        <span class="icon-text">
+          <span class="icon">
+            <ion-icon name="radio-outline"></ion-icon>
+          </span>
+          <span><Strong class="">No Podcast available</Strong></span>
+        </span>
+      </p>
+      @endeach
+    </div>
+
+
+  </div>
+  <div class="section">
+    <div class="container">
+      <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+        <ul class="pagination-list">
+          @each(anchor in podcasts.getUrlsForRange(1, podcasts.lastPage))
+          <li><a class="pagination-link" href="{{ anchor.url }}" aria-label="Goto page 1">{{ anchor.page }}</a></li>
+            @endeach
+        </ul>
+      </nav>
+    </div>
+  </div>
+</section>
+
+@endsection

@@ -1,0 +1,102 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+  <div class="container">
+    <a class="navbar-brand" href="{{route('home')}}">
+      <i class="fab fa-github fa-2x mx-3 ps-1"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <form class="me-3">
+        <div class="form-white input-group" style="width: 250px;">
+          <input type="search" class="form-control rounded" placeholder="Search or jump to... ( / )" aria-label="Search"
+            aria-describedby="search-addon" />
+        </div>
+      </form>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pull request</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Issues</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Marketplace</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Explore</a>
+        </li>
+      </ul>
+      {{-- Navbar End --}}
+      <ul class="navbar-nav d-flex flex-row ms-auto me-3">
+        @if(auth.isLoggedIn)
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" cls class="rounded-circle" width="22"
+              height="22" alt="" loading="lazy" />
+            <span class="ms-2">{{auth.user.name}}</span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="{{route('my-podcast')}}">
+                <span class="icon-text">
+                  <span class="icon">
+                    <ion-icon name="radio-outline"></ion-icon>
+                  </span>
+                  <span>podcast</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{route('subscriptions')}}">
+                <span class="icon-text">
+                  <span class="icon">
+                    <ion-icon name="notifications-outline"></ion-icon>
+                  </span>
+                  <span>Subscribes</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{route('settings.account')}}">
+                <span class="icon-text">
+                  <span class="icon">
+                    <ion-icon name="person-outline"></ion-icon>
+                  </span>
+                  <span>Acount</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form id="logout" action="/logout" method="post">
+                {{ csrfField() }}
+            <li>
+              <a class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout').submit()">
+                <span class="icon">
+                  <ion-icon name="log-out-outline"></ion-icon>
+                </span>
+                <span>Logout</span>
+                </span>
+              </a>
+            </li>
+            </form>
+        </li>
+      </ul>
+      </li>
+      @else
+      <form class="d-flex">
+        <a class="button is-primary me-2" href="{{route('register')}}"><strong>Sign up</strong></a>
+        <div><a class="button is-light has-text-primary" href="{{route('login')}}">Log in</a></div>
+      </form>
+      @endif
+      </ul>
+    </div>
+  </div>
+</nav>
+

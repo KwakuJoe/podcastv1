@@ -1,0 +1,227 @@
+@layout('layout/app')
+
+@set('title','show-podcast')
+
+@section('body')
+<section class="timeline-carousel">
+  <div class="container mt-2">
+    <div class="h-100 p-5 text-white bg-dark rounded-3">
+      <h2>Channel: {{podcast.title}}</h2>
+      <h4>Host: {{podcast.user.name}}</h4>
+      <p>{{podcast.description}}</p>
+      @if(auth.isLoggedIn)
+      @if(auth.user.id != podcast.user.id)
+      @if(subscriptions.map(s => s.user_id).includes(auth.user.id))
+      {{-- <p>Positive</p> --}}
+      <form action="{{'/subscriptions/' + podcast.id + '?_method=DELETE'}}" method="post">
+        {{ csrfField() }}
+        <input type="hidden" name="podcast_id" value="{{podcast.id}}">
+        <button class="btn border-info text-info" type="submit">
+          <span class="icon-text">
+            <span class="icon">
+              <ion-icon name="notifications-outline"></ion-icon>
+            </span>
+            <span><Strong class="text-info">Unsubscribe</Strong></span>
+          </span>
+        </button>
+      </form>
+      @else
+      <form action="{{route('subscription.store')}}" method="post">
+        {{ csrfField() }}
+        <input type="hidden" name="podcast_id" value="{{podcast.id}}">
+        <button class="btn border-info text-info" type="submit">
+          <span class="icon-text">
+            <span class="icon">
+              <ion-icon name="notifications-outline"></ion-icon>
+            </span>
+            <span><Strong class="text-info">Subscribe</Strong></span>
+          </span>
+        </button>
+      </form>
+      @endif
+      @endif
+      @endif
+    </div>
+  </div>
+</section>
+
+{{-- notification --}}
+@if(flashMessages.has('notification'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message</strong> {{ flashMessages.get('notification')}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
+<div class="section m-0">
+  <div class="container">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom">
+      <p class="h4">Uploaded Episodes</p>
+
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="row">
+        <div class="colum col-lg-3 col-md-6 col-sm-12">
+          <!-- Card -->
+          @each(episode in episodes)
+          <div class="d-flex justify-content-start flex-wrap flex-md-nowrap align-items-center bg-dark p-2">
+            <a href="{{route('episode.download', {slug: podcast.slug, id:episode.id})}}">
+              <span class="icon-text ms-4 has-text-white">
+                <span class="icon">
+                  <ion-icon name="download-outline"></ion-icon>
+                </span>
+                <span><Strong class="has-text-white">Download episodes</Strong></span>
+              </span>
+            </a>
+          </div>
+          <div class="card bg-dark">
+
+            <!-- Card image -->
+            <div class="view">
+              <img class="card-img-top " src="{{appUrl}}{{podcast.logo}}" alt="Card image cap">
+              <a href="https://bachataurban.com/" target="_blank">
+                <div class="mask gradient-card"></div>
+              </a>
+            </div>
+
+
+            <!-- Card content -->
+            <div class="card-body text-center text-white">
+
+              <h5 class="h5 font-weight-bold">
+                <a href="https://bachataurban.com/" class="text-white" target="_blank">{{episode.title}}</a>
+              </h5>
+              <p class="mb-0 text-white">{{ truncate(episode.summary, 20) }}</p>
+              <audio id="music" preload="true">
+                <source src="{{episode.audio}}">
+              </audio>
+              <div id="audioplayer">
+                <i id="pButton" class="fas fa-play text-white"></i>
+                <div id="timeline">
+                  <div id="playhead"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          @endeach
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection
+
+
+
+
+{{-- Javsacripts --}}
+@section('scripts')
+
+<script>
+  var music = document.getElementById('music'); // id for audio element
+    var duration = music.duration; // Duration of audio clip, calculated here for embedding purposes
+    var pButton = document.getElementById('pButton'); // play button
+    var playhead = document.getElementById('playhead'); // playhead
+    var timeline = document.getElementById('timeline'); // timeline
+
+    // timeline width adjusted for playhead
+    var timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
+
+    // play button event listenter
+    pButton.addEventListener("click", play);
+
+    // timeupdate event listener
+    music.addEventListener("timeupdate", timeUpdate, false);
+
+    // makes timeline clickable
+    timeline.addEventListener("click", function (event) {
+    moveplayhead(event);
+    music.currentTime = duration * clickPercent(event);
+    }, false);
+
+    // returns click as decimal (.77) of the total timelineWidth
+    function clickPercent(event) {
+    return (event.clientX - getPosition(timeline)) / timelineWidth;
+    }
+
+    // makes playhead draggable
+    playhead.addEventListener('mousedown', mouseDown, false);
+    window.addEventListener('mouseup', mouseUp, false);
+
+    // Boolean value so that audio position is updated only when the playhead is released
+    var onplayhead = false;
+
+    // mouseDown EventListener
+    function mouseDown() {
+    onplayhead = true;
+    window.addEventListener('mousemove', moveplayhead, true);
+    music.removeEventListener('timeupdate', timeUpdate, false);
+    }
+
+    // mouseUp EventListener
+    // getting input from all mouse clicks
+    function mouseUp(event) {
+    if (onplayhead == true) {
+    moveplayhead(event);
+    window.removeEventListener('mousemove', moveplayhead, true);
+    // change current time
+    music.currentTime = duration * clickPercent(event);
+    music.addEventListener('timeupdate', timeUpdate, false);
+    }
+    onplayhead = false;
+    }
+    // mousemove EventListener
+    // Moves playhead as user drags
+    function moveplayhead(event) {
+    var newMargLeft = event.clientX - getPosition(timeline);
+
+    if (newMargLeft >= 0 && newMargLeft <= timelineWidth) { playhead.style.marginLeft=newMargLeft + "px" ; } if (newMargLeft
+      < 0) { playhead.style.marginLeft="0px" ; } if (newMargLeft> timelineWidth) {
+      playhead.style.marginLeft = timelineWidth + "px";
+      }
+      }
+
+      // timeUpdate
+      // Synchronizes playhead position with current point in audio
+      function timeUpdate() {
+      var playPercent = timelineWidth * (music.currentTime / duration);
+      playhead.style.marginLeft = playPercent + "px";
+      if (music.currentTime == duration) {
+      pButton.className = "";
+      pButton.className = "fas fa-play";
+      }
+      }
+
+      //Play and Pause
+      function play() {
+      // start music
+      if (music.paused) {
+      music.play();
+      // remove play, add pause
+      pButton.className = "";
+      pButton.className = "fas fa-pause";
+      } else { // pause music
+      music.pause();
+      // remove pause, add play
+      pButton.className = "";
+      pButton.className = "fas fa-play";
+      }
+      }
+
+      // Gets audio file duration
+      music.addEventListener("canplaythrough", function () {
+      duration = music.duration;
+      }, false);
+
+      // getPosition
+      // Returns elements left position relative to top-left of viewport
+      function getPosition(el) {
+      return el.getBoundingClientRect().left;
+      }
+</script>
+@endsection

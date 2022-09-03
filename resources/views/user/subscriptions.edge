@@ -1,0 +1,95 @@
+@layout('layout/app')
+@set('title','my-subscriptions')
+
+@section('body')
+
+<div class="columns is-centered">
+  <div class="column is-8 vcenter mt-3">
+    @if(flashMessages.has('notification'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Success</strong> {{ flashMessages.get('notification')}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if(flashMessages.has('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Success</strong> {{ flashMessages.get('error')}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+    {{-- button --}}
+    <div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-4 mx-3 border-bottom">
+      <span class="icon-text">
+        <span class="icon">
+          <ion-icon name="notifications-outline"></ion-icon>
+        </span>
+        <span><Strong class="lead fw-bold">My subscriptions</Strong></span>
+      </span>
+    </div>
+    {{-- Podcast --}}
+    <div class="row ">
+      @each(podcast in subscriptions)
+      <div class="container mt-4 d-flex justify-content-start">
+        <div class="myPodcastCard p-3 bg-dark text-white w-100">
+          <div class="d-flex align-items-start">
+            <img src="{{ appUrl }}/{{podcast.logo}}" class="rounded" style="height:120px; width:auto" width="auto">
+            <div class="ml-5 w-auto">
+              <h4 class="mb-0 mt-0">{{podcast.title}}</h4>
+              <span>{{ truncate(podcast.description, 150) }}</span>
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mx-3">
+                {{-- <p class="">Actions</p> --}}
+                <div class="btn-toolbar mb-2 mb-md-0">
+                  <div class="btn-group me-2">
+                    <form id="delete-podcast" action="{{'/subscriptions/' + podcast.id + '?_method=DELETE'}}" method="post">
+                      {{ csrfField() }}
+                      <a type="submit"
+                        onclick="event.preventDefault(); document.getElementById('delete-podcast').submit()">
+                        <span class="icon-text has-text-danger">
+                          <span class="icon">
+                            <ion-icon name="notifications-outline"></ion-icon>
+                          </span>
+                          <span><Strong class="has-text-danger">Unsubscribe</Strong></span>
+                        </span>
+                      </a>
+                    </form>
+                    <a href="{{route('podcast.show', {slug: podcast.slug})}}" target="_blank">
+                      <span class="icon-text ms-4 has-text-info">
+                        <span class="icon">
+                          <ion-icon name="eye-outline"></ion-icon>
+                        </span>
+                        <span><Strong class="has-text-info">View podcast</Strong></span>
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+      <a href="{{route('podcast.show', {slug: podcast.slug})}}" target="_blank">
+
+      </a>
+
+
+      @else
+      <p class="p-3 rounded bg-light text-muted text-centered"> <span class="icon-text">
+          <span class="icon">
+            <ion-icon name="radio-outline"></ion-icon>
+          </span>
+          <span><Strong class="">No Subscription available</Strong></span>
+        </span></p>
+      @endeach
+    </div>
+  </div>
+</div>
+
+@endsection

@@ -1,0 +1,88 @@
+@layout('layout/app')
+
+@set('title','edit-podcast')
+
+@section('body')
+<div class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8 col-sm-12 border rounded  p-5">
+        @if(flashMessages.has('notification'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('notification')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        @if(flashMessages.has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('error.logo')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        <h4 class="text-muted bg-light px-3 py-2 mb-2 rounded">Update podcast Channel</h4>
+        <form action="{{ route('podcast.update', {id: podcast.id}) + '?_method=PUT'}}" method="post" enctype="multipart/form-data">
+          {{ csrfField() }}
+          <div class="field">
+            {{-- Name Input --}}
+            <label class="label">Title</label>
+            <div class="control has-icons-left has-icons-right">
+              <input class="input {{ flashMessages.get('errors.title') ? 'is-danger' : '' }} "
+               name="title"
+               value="{{podcast.title}}"
+               type="text"
+                placeholder="Title input">
+              <span class="icon is-small is-left">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            @if(flashMessages.has('errors.title'))
+            <p class="help is-danger">{{flashMessages.get('errors.title')}}</p>
+            @endif
+          </div>
+          {{-- description --}}
+          <label class="label">Description</label>
+          <textarea class="textarea mb-3 {{ flashMessages.get('errors.description') ? 'is-danger' : '' }}"
+            placeholder="Desciption" rows="10" name="description">{{podcast.description}}</textarea>
+          @if(flashMessages.has('errors.description'))
+          <p class="help is-danger">{{flashMessages.get('errors.description')}}</p>
+          @endif
+          {{-- Select category --}}
+          <label class="label">Select category</label>
+          <div class="select mb-3 {{ flashMessages.get('errors.categoryId') ? 'is-danger' : '' }}">
+            <select name="categoryId">
+              @each(category in categories)
+              <option value="{{category.id}}" {{ podcast.category_id == category.id ? 'selected': '' }} >{{category.name}}</option>
+              @endeach
+            </select>
+          </div>
+          @if(flashMessages.has('errors.categoryId'))
+          <p class="help is-danger">{{flashMessages.get('errors.categoryId')}}</p>
+          @endif
+          {{-- file upload --}}
+          <label class="label">Upload Logo</label>
+          <div class="file has-name">
+            <label class="file-label">
+              <input class="file-input" va type="file" name="logo">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+              <span class="file-name">
+                Screen Shot 2017-07-29 at 15.54.25.png
+              </span>
+            </label>
+          </div>
+          @if(flashMessages.has('errors.logo'))
+          <p class="help is-danger">{{flashMessages.get('errors.logo')}}</p>
+          @endif
+          {{-- button --}}
+          <button class="button is-primary is-fullwidth mt-3" type="submit">Create podcast</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection

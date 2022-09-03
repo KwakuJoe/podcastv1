@@ -1,0 +1,62 @@
+@layout('layout/app')
+
+@set('title', 'Passwors reset')
+
+@section('body')
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6-tablet is-4-desktop">
+
+        {{-- notification --}}
+        @if(flashMessages.has('notification'))
+        <article class="message is-danger" id="messageBox">
+          <div class="message-header">
+            <p>Reset password failed</p>
+            <button class="delete" aria-label="delete" onclick="displayHide()" id="messageCloseBtn"></button>
+          </div>
+          <div class="message-body">
+            {{ flashMessages.get('notification')}}
+          </div>
+        </article>
+        @endif
+
+        {{-- form starts --}}
+        <div class="card p-5">
+          <h1 class="title has-text-centered">Reset Password</h1>
+          <form action="//password/reset" method="post">
+            {{ csrfField() }}
+            <div class="field">
+              {{-- Email Input --}}
+              <label class="label">Email</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input" name="email" type="email" placeholder="Email input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+              @if(flashMessages.has('errors.email'))
+               <p class="help is-danger">{{flashMessages.get('errors.email')}}</p>
+               @endif
+            </div>
+            {{-- button --}}
+            <button class="button is-primary is-fullwidth" type="submit">Send password reset link</button>
+
+            {{-- below links --}}
+            <p class="has-text-centered mt-3"><a href="">Forgot password ?</a></p>
+        </div>
+        </form>
+      </div>
+    </div>
+</section>
+
+@endsection
+
+@section('scripts')
+<script type="text/javascript">
+  function displayHide() {
+          document.getElementById("messageBox").style.visibility = "hidden";
+        }
+</script>
+@endsection

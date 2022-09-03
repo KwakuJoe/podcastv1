@@ -1,0 +1,123 @@
+@layout('layout/app')
+
+@set('title', 'my-podcast')
+
+@section('body')
+<div class="columns is-centered">
+  <div class="column is-8 vcenter mt-3">
+    @if(flashMessages.has('notification'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Success</strong> {{ flashMessages.get('notification')}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if(flashMessages.has('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Success</strong> {{ flashMessages.get('error')}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+    <p class="title text-muted">My Podcast</p>
+    {{-- button --}}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mx-3 border-bottom">
+      <p class="h4">Uploaded Podcast</p>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+          <a class="button is-primary" href="{{route('podcast.create')}}">
+            <span class="icon-text">
+              <span class="icon">
+                <ion-icon name="radio-outline"></ion-icon>
+              </span>
+              <span><Strong>Add new podcast</Strong></span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+    {{-- Podcast --}}
+    <div class="row  mx-3">
+      @each(podcast in podcasts)
+      <div class="container mt-2 d-flex justify-content-center">
+        <div class="myPodcastCard p-3 bg-dark text-white">
+          <div class="d-flex align-items-start">
+            <img src="{{appUrl}}/{{podcast.logo}}" class="rounded" height="100" width="130">
+            <div class="ml-5 w-auto">
+              <h4 class="mb-0 mt-0">{{podcast.title}}</h4>
+              <span>{{ truncate(podcast.description, 200) }}</span>
+              <div class="p-2 mt-2  d-flex justify-content-start rounded text-white stats">
+                <div class="d-flex flex-column me-4">
+                  <span class="articles">Articles</span>
+                  <span class="number1">38</span>
+                </div>
+                <div class="d-flex flex-column me-4">
+                  <span class="followers">Followers</span>
+                  <span class="number2">980</span>
+                </div>
+                <div class="d-flex flex-column">
+                  <span class="rating">Rating</span>
+                  <span class="number3">8.9</span>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mx-3">
+                {{-- <p class="">Actions</p> --}}
+                <div class="btn-toolbar mb-2 mb-md-0">
+                  <div class="btn-group me-2">
+                    <a href="{{route('podcast.edit', {id: podcast.id})}}">
+                      <span class="icon-text me-4 has-text-info">
+                        <span class="icon">
+                          <ion-icon name="create-outline"></ion-icon>
+                        </span>
+                        <span><Strong class="has-text-info">Edit</Strong></span>
+                      </span>
+                    </a>
+                    <form id="delete-podcast" action="{{'/podcast/' + podcast.id + '?_method=DELETE'}}" method="post">
+                      {{ csrfField() }}
+                      <a type="submit"
+                        onclick="event.preventDefault(); document.getElementById('delete-podcast').submit()">
+                        <span class="icon-text has-text-danger">
+                          <span class="icon">
+                            <ion-icon name="trash-outline"></ion-icon>
+                          </span>
+                          <span><Strong class="has-text-danger">Delete</Strong></span>
+                        </span>
+                      </a>
+                    </form>
+                    <a href="{{route('podcast.show', {slug: podcast.slug})}}" target="_blank">
+                      <span class="icon-text ms-4 has-text-info">
+                        <span class="icon">
+                          <ion-icon name="eye-outline"></ion-icon>
+                        </span>
+                        <span><Strong class="has-text-info">View podcast</Strong></span>
+                      </span>
+                    </a>
+                    <a href="{{route('episode.create', {slug: podcast.slug})}}" target="_blank">
+                      <span class="icon-text ms-4 has-text-info">
+                        <span class="icon">
+                          <ion-icon name="cloud-upload-outline"></ion-icon>
+                        </span>
+                        <span><Strong class="has-text-info">Upload episodes</Strong></span>
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="{{route('podcast.show', {slug: podcast.slug})}}" target="_blank">
+      </a>
+      @else
+      <p class="p-3 rounded bg-light text-muted text-centered"> <span class="icon-text">
+          <span class="icon">
+            <ion-icon name="radio-outline"></ion-icon>
+          </span>
+          <span><Strong class="">No Podcast available</Strong></span>
+        </span></p>
+      @endeach
+    </div>
+  </div>
+</div>
+@endsection

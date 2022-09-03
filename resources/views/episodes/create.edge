@@ -1,0 +1,67 @@
+@layout('layout/app')
+
+@set('title','create-episodes')
+
+@section('body')
+<div class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8 col-sm-12 border rounded  p-5">
+        @if(flashMessages.has('notification'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('notification')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        @if(flashMessages.has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('error')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        <h4 class="text-muted bg-light px-3 py-2 mb-2 rounded">Upload episodes to {{podcast.title}} channel</h4>
+
+        <form action="{{route('episode.store')}}" method="post" enctype="multipart/form-data">
+          {{ csrfField() }}
+          <div class="field">
+            {{-- Name Input --}}
+            <label class="label">Title</label>
+            <div class="control has-icons-left has-icons-right">
+              <input class="input" value="{{podcast.id}}" name="podcastId" type="hidden"
+                placeholder="Title input">
+              <span class="icon is-small is-left">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="control has-icons-left has-icons-right">
+              <input class="input {{ flashMessages.get('errors.title') ? 'is-danger' : '' }} " name="title" type="text"
+                placeholder="Title input">
+              <span class="icon is-small is-left">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            @if(flashMessages.has('errors.title'))
+            <p class="help is-danger">{{flashMessages.get('errors.title')}}</p>
+            @endif
+          </div>
+          {{-- summary --}}
+          <label class="label">summary</label>
+          <textarea class="textarea mb-3 {{ flashMessages.get('errors.summary') ? 'is-danger' : '' }}"
+            placeholder="Desciption" rows="10" name="summary"></textarea>
+          @if(flashMessages.has('errors.summary'))
+          <p class="help is-danger">{{flashMessages.get('errors.summary')}}</p>
+          @endif
+          {{-- file upload --}}
+          <div class="mb-3">
+            <label for="formFile" class="form-label fw-bold">UPLOAD AUDIO</label>
+            <input class="form-control form-control-input" name="audio" type="file" id="formFile">
+            @if(flashMessages.has('errors.audio'))
+            <div id="emailHelp" class="form-text text-danger">{{flashMessages.get('errors.audio')}}.</div>
+            @endif
+          </div>
+          {{-- button --}}
+          <button class="button is-primary is-fullwidth mt-3" type="submit">Upload episode</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection

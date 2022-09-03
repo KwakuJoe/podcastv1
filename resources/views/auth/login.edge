@@ -1,0 +1,91 @@
+@layout('layout/app')
+
+@set('title', 'Login')
+
+@section('body')
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6-tablet is-4-desktop">
+
+        {{-- notification --}}
+
+        @if(flashMessages.has('notification'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('notification')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if(flashMessages.has('verify-notification'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>Holy guacamole!</strong> {{ flashMessages.get('verify-notification')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if(flashMessages.has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('error')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        {{-- form starts --}}
+        <div class="border rounded p-5">
+          <h1 class="title has-text-centered">Login</h1>
+          <form action="/login" method="post">
+            {{ csrfField() }}
+            <div class="field">
+              {{-- Email Input --}}
+              <label class="label">Email</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input" name="email" type="email" placeholder="Email input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+              @if(flashMessages.has('errors.email'))
+              <p class="help is-danger">{{flashMessages.get('errors.email')}}</p>
+              @endif
+            </div>
+            <div class="field">
+              {{-- password Input --}}
+              <label class="label">Password</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input" name="password" type="password" placeholder="Password input">
+                <span class="icon is-small is-left">
+                  <i class="fa-solid fa-lock"></i>
+                </span>
+              </div>
+              @if(flashMessages.has('errors.password'))
+              <p class="help is-danger">{{flashMessages.get('errors.password')}}</p>
+              @endif
+            </div>
+            {{-- Remember me --}}
+            <div class="d-flex justify-content-between my-3">
+
+              <div class="field">
+                <div class="control">
+                  <label class="checkbox">
+                    <input type="checkbox" name="remember">
+                    Remember me
+                  </label>
+                </div>
+              </div>
+              {{-- Link to fogot your password --}}
+              <a href="">Forgot password?</a>
+            </div>
+            {{-- button --}}
+            <button class="button is-primary is-fullwidth" type="submit">Login</button>
+
+            {{-- below links --}}
+            <p class="has-text-centered mt-3"><a href="">Resend Email verification Link</a></p>
+        </div>
+        </form>
+      </div>
+    </div>
+</section>
+
+@endsection

@@ -1,0 +1,98 @@
+@layout('layout/app')
+
+@set('title', 'Signup')
+
+@section('body')
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6-tablet is-4-desktop">
+        {{-- notifcation --}}
+
+          @if(flashMessages.has('notification'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Message</strong> {{ flashMessages.get('notification')}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+        {{-- form starts --}}
+        <div class="border rounded p-5">
+          <h1 class="title has-text-centered">Signup</h1>
+          <form action="/register" method="post">
+            {{ csrfField() }}
+            <div class="field">
+              {{-- Email Input --}}
+              <label class="label">Email</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input {{flashMessages.has('errors.email') ? 'is-danger' : ''}} " name="email" type="email"
+                  placeholder="Email input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+              @if(flashMessages.has('errors.email'))
+              <p class="help is-danger">{{flashMessages.get('errors.email')}}</p>
+              @endif
+            </div>
+            <div class="field">
+              <div class="field">
+                {{-- Name Input --}}
+                <label class="label">Full name</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input {{ flashMessages.get('errors.name') ? 'is-danger' : '' }} " name="name"
+                    type="text" placeholder="Full name input">
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                @if(flashMessages.has('errors.name'))
+                <p class="help is-danger">{{flashMessages.get('errors.name')}}</p>
+                @endif
+              </div>
+              <div class="field">
+                {{-- password Input --}}
+                <label class="label">Password</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input {{flashMessages.has('errors.password') ? 'is-danger' : ''}}" type="password"
+                    name="password" placeholder="Password input">
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-lock"></i>
+                  </span>
+                </div>
+                @if(flashMessages.has('errors.password'))
+                <p class="help is-danger">{{flashMessages.get('errors.password')}}</p>
+                @endif
+              </div>
+              <div class="field">
+                {{-- confirm_password Input --}}
+                <label class="label">Email</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input {{flashMessages.has('errors.passwordConfirmation') ? 'is-danger' : ''}} "
+                    name="passwordConfirmation" type="password" placeholder="Confirm password input">
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-lock"></i>
+                  </span>
+                </div>
+                @if(flashMessages.has('errors.passwordConfirmation'))
+                <p class="help is-danger">{{flashMessages.get('errors.passwordConfirmation')}}</p>
+                @endif
+              </div>
+              {{-- button --}}
+              <button class="button is-primary is-fullwidth" type="submit">Register</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</section>
+
+@endsection
+
+
+@section('scripts')
+<script type="text/javascript">
+  function displayHide() {
+      document.getElementById("messageBox").style.visibility = "hidden";
+    }
+</script>
+@endsection

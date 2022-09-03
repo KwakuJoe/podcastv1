@@ -1,0 +1,65 @@
+@layout('layout/app')
+
+@set('title','settings-account')
+
+
+@section('body')
+
+<div class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-3">
+        @include('user/partials/_settings_menu')
+      </div>
+      <div class="column column is-5">
+
+        @if(flashMessages.has('notification'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>Message</strong> {{ flashMessages.get('notification')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        <div class="border rounded p-5">
+          <h4 class=" text-muted has-text-centered">Edit Account</h4>
+          <form action="/settings/account?_method=PUT" method="post">
+            {{ csrfField() }}
+            <div class="field">
+              {{-- Email Input --}}
+              <label class="label">Email</label>
+              <div class="control has-icons-left has-icons-right">
+                <input class="input {{flashMessages.has('errors.email') ? 'is-danger' : ''}} " name="email" type="email"
+                  value="{{auth.user?.email}}" placeholder="Email input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+              @if(flashMessages.has('errors.email'))
+              <p class="help is-danger">{{flashMessages.get('errors.email')}}</p>
+              @endif
+            </div>
+            <div class="field">
+              <div class="field">
+                {{-- Name Input --}}
+                <label class="label">Name</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input {{ flashMessages.get('errors.name') ? 'is-danger' : '' }} " name="name"
+                    type="text" value="{{auth.user?.name}}" placeholder="Full name input">
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                @if(flashMessages.has('errors.name'))
+                <p class="help is-danger">{{flashMessages.get('errors.name')}}</p>
+                @endif
+              </div>
+              {{-- button --}}
+              <button class="button is-primary is-fullwidth mt-4" type="submit">Update Account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@endsection

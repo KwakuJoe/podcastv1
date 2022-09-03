@@ -1,0 +1,62 @@
+@layout('layout/app')
+
+@set('title','Categories-Podcast')
+
+@section('body')
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="column col-lg-3">
+        <article class="panel is-dark bg-light text-white">
+          <p class="panel-heading">
+            Category
+          </p>
+          <div class="panel-block">
+            <p class="control has-icons-left">
+              <input class="input is-primary" type="text" placeholder="Search">
+              <span class="icon is-left">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </span>
+            </p>
+          </div>
+          @each(category in categories)
+          <a class="panel-block" href="{{route('categories.show',{slug:category.slug})}}">
+            <span class="panel-icon">
+              <i class="fas fa-book" aria-hidden="true"></i>
+            </span>
+            {{ category.name }}
+          </a>
+          @endeach
+        </article>
+      </div>
+      <div class="column col-lg-9">
+        <h4>{{category.name}}</h4>
+
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            @each(podcast in podcasts)
+            <div class="profile-card-2">
+              <img src="{{appUrl}}/{{podcast.logo}}" class="img img-responsive">
+              <div class="profile-name">{{ truncate(podcast.title, 50) }}</div>
+              <div class="profile-username fs-1 mt-3">
+                <ion-icon name="radio-outline"></ion-icon>
+              </div>
+            </div>
+
+            @else
+            <p class="p-3 rounded bg-light text-muted text-centered">
+                    <span class="icon-text">
+                      <span class="icon">
+                        <ion-icon name="radio-outline"></ion-icon>
+                      </span>
+                      <span><Strong class="">No Podcast available for {{category.name}} category</Strong></span>
+                    </span>
+                  </p>
+            @endeach
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection
