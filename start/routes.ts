@@ -38,7 +38,7 @@ Route.group(() => {
     Route.get('/password/reset', 'PasswordResetController.create')
     Route.post('/password/reset', 'PasswordResetController.store')
 
-    Route.get('/verification/new', 'EmailVerificationController.create')
+    Route.get('/verification/new', 'EmailVerificationController.create').as('verification.new')
     Route.post('/verification', 'EmailVerificationController.store')
     Route.get('/verification/:email', 'EmailVerificationController.verify').as('verification.verify')
 
